@@ -35,6 +35,8 @@ class ESIM(object):
         """
         a = Input(shape=(self.max_length,), dtype='int32', name='premise')
         b = Input(shape=(self.max_length,), dtype='int32', name='hypothesis')
+        
+        # Input作用是占位符，创建某个形状的tensor，后续在model.fix时才会传入真正的数据
 
         # ---------- Embedding layer ---------- #
         embedding = EmbeddingLayer(self.voc_size, self.embedding_dim,
