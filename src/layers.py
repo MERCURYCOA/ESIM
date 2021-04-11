@@ -108,18 +108,18 @@ class LocalInferenceLayer(object):
 # 如果把一个batch的sequence看成是一个立方体的话，那么深-batch, 高-seq,宽-vector
 # 而permute_dimensions(inputs[1],pattern=(0, 2, 1))就是将这个立方体的高和宽转置，就是batch不变，将立方体向右滚90度
 # batch_dot是说按批次进行点乘，这里让 inputs[0]和inputs[1]的转置 进行点乘，
-# 意思是question1的一句话中的每个word的vector分别和question2同样位置的一句话的所有word的vector点乘，点乘的结果是他们的相关性的分数
+# 意思是question1的一句话中的每个word的vector分别和question2同样位置的一句话的所有word的vector点乘，每2个vector点乘的结果是一个标量，也就是他们的相关性的分数
 # 得到的新3维tensor（立方体）就是attention_weights
 # 这个新的attention_weights还需要将axis 1,2转置，因为刚才inputs[1]的axis 1，2被转置了，（第2个立方体是倒下的），
 # 也就是之前求点乘时，input[0]的sequence是正序的，input[1]的sequence是倒序的，现在把axis 1,2转转制回来。
 
 # 更详细的内容看笔记。
 
-    def _attention_output_shape(self, inputs):
+    def _attention_output_shape(self, inputs): # 
         input_shape = inputs[0]
         embedding_size = input_shape[1]
         return (input_shape[0], embedding_size, embedding_size)
-# 新生成的方块的维度，input_shape[0]是quesiton1=question2的长度，就是有多少个句子，embedding_size是300,就是vector的维度
+# 新生成的方块的维度，input_shape[0]是quesiton1=question2的长度，就是有多少个句子，embedding_size是seqence的长度，
 
     def _soft_alignment(self, inputs):
         """
