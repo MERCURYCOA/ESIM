@@ -38,7 +38,7 @@ def prepare_data(preproc_dir, dataset, n_classes, max_length=None):
         labels = pickle.load(labels_file)
 
     premises = pad_sequences(premises, maxlen=max_length,
-                             padding='post', truncating='post')
+                             padding='post', truncating='post')  # padding, truncating的位置，'pre'是在list的前面，'post'是在句子的后面，一般选post
 
     hypotheses = pad_sequences(hypotheses, maxlen=max_length,
                                padding='post', truncating='post')
