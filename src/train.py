@@ -36,6 +36,10 @@ def train(preproc_dir, n_classes, max_length, hidden_units, dropout,
                                                             'dev',
                                                             n_classes,
                                                             max_length)
+# train_premises是如下形式：
+# [[5, 6, 7, 8, 9, 3, 10, 11, 12, 13, 14, 2, 15, 16, 3，0，0，0，0], 
+#  [17, 18, 19, 20, 21, 22, 4, 23, 2, 24，0，0，0，0，0，0，0，0，0], 
+#  [25, 26, 27，0，0，0，0，0，0，0，0，0，0，0，0，0，0，0，0，0，0，0]]
 
     print("Loading embedding weights...")
     embedding_weights = load_embeddings(os.path.join(preproc_dir,
