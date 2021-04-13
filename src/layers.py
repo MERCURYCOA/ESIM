@@ -71,7 +71,6 @@ class LocalInferenceLayer(object):
     def __call__(self, inputs):
         a = inputs[0]
         b = inputs[1]
-# 没有使用keras.Attention层因为这里只是计算scores，而不用Q, V, K矩阵进行学习。只有需要学习参数才用layers， 这里是用匿名函数进行计算，用Lambda封装到层，在Model里面用
         attention = Lambda(self._attention,
                            self._attention_output_shape)(inputs)
 
@@ -92,6 +91,11 @@ class LocalInferenceLayer(object):
         m_b = concatenate([b, align_b, sub_b_align, mul_b_align])
 
         return m_a, m_b
+# 根据ESIM模型的设定，local inference 做了这么一件事：
+# a = encoded_a, b = encoded_b
+# a_ = align_a, b_ = align_b
+# m_a = [a, a_, a-a_, a*a_]
+# m_b = [b, b_, b-b_, b*b_]
 
     def _attention(self, inputs):
         """
@@ -110,6 +114,8 @@ class LocalInferenceLayer(object):
                                    y=K.permute_dimensions(inputs[1],
                                                           pattern=(0, 2, 1)))
         return K.permute_dimensions(attn_weights, (0, 2, 1))
+# 没有使用keras.Attention层因为这里只是计算scores，而不用Q, V, K矩阵进行学习。只有需要学习参数才用layers， 这里是用匿名函数进行计算，用Lambda封装到层，在Model里面用
+
 # attention的逻辑：
 # 首先，inputs是encoded_a, encoded_b, 所以inputs[0]是encoded_a, inputs[1]是encoded_b
 # permute_dimensions(inputs[1],pattern=(0, 2, 1))，pattern中的0,1,2依次代表深，高，宽，
