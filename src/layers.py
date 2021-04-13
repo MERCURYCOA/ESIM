@@ -187,7 +187,7 @@ class InferenceCompositionLayer(object):
         reduction = TimeDistributed(Dense(self.hidden_units,
                                           kernel_initializer='he_normal',
                                           activation='relu'))(composition)
-
+# TimeDistributed (Dense)是在每个时间戳上做dense
         return Dropout(self.dropout)(reduction)
 
 
@@ -201,13 +201,13 @@ class PoolingLayer(object):
         a = inputs[0]
         b = inputs[1]
 
-        a_avg = GlobalAveragePooling1D()(a)
-        a_max = GlobalMaxPooling1D()(a)
+        a_avg = GlobalAveragePooling1D()(a)   # 输入：batch_size, steps, features  输出：batch_size, features  /  这里的features就是上一层的输出composed_a
+        a_max = GlobalMaxPooling1D()(a)       # 这一步的作用是：降维，把时间维度steps压缩了， 不再是一个词一个编码，而是压缩成一句话一个编码
 
         b_avg = GlobalAveragePooling1D()(b)
         b_max = GlobalMaxPooling1D()(b)
 
-        return concatenate([a_avg, a_max, b_avg, b_max])
+        return concatenate([a_avg, a_max, b_avg, b_max])   # 最后把句编码拼接起来
 
 
 class MLPLayer(object):
@@ -224,6 +224,6 @@ class MLPLayer(object):
         self.model.add(Dropout(dropout))
         self.model.add(Dense(n_classes, kernel_initializer='zero',
                              activation=activations[1]))
-
+# 最后接2层dense，分别由tanh和softmax激活
     def __call__(self, input):
         return self.model(input)
