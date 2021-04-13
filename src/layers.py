@@ -50,6 +50,14 @@ class EncodingLayer(object):
                                         dropout=dropout,
                                         recurrent_dropout=dropout),
                                    merge_mode='concat')
+# hidden_units是cell输出的维度，在MLP中，输出维度与神经元数量是相等的，但是在LSTM中神经元数量与输出维度不想等，1个cell里有4个gate（激活函数），所以参数数量也就是神经元个数远远大于输出维度， 一般好似M级的。
+# activation - 输入门的输入经过tahn变换
+# recurrent_activation - 其他3个门经过sigmoid变换
+# dropout - activation那一层之后的dropout
+# recurrent_dropout - recurrent_activation之后的dropout
+# return_sequences - 如果return_sequences=True：返回形如（samples，timesteps，output_dim）的3D张量否则，每个时间戳的output都返回。
+# return_sequences=False：返回形如（samples，output_dim）的2D张量, 就是只返回最后一个时间戳的output。
+# 注意多层LSTM： 前面层都要return_sequences=True, 因为后面LSTM层需要这些output作为输入，只有最后一层return_sequences=False.因为最后一层只取一个输出值。
 
     def __call__(self, input):
         return self.layer(input)
