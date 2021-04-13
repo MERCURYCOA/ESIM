@@ -116,9 +116,11 @@ class LocalInferenceLayer(object):
 # 更详细的内容看笔记。
 
     def _attention_output_shape(self, inputs): # 
-        input_shape = inputs[0]
+        input_shape = inputs[0] 
         embedding_size = input_shape[1]
-        return (input_shape[0], embedding_size, embedding_size)
+        return (input_shape[0], embedding_size, embedding_size)  # 这里的输出是Lambda函数的outputshape的传入参数，
+    # 这里的input_shape[0]在传入时接收的是input_shape[0]的形状，而不是真实的值
+    
 # 新生成的方块的维度，input_shape[0]是quesiton1=question2的长度，就是有多少个句子，embedding_size是seqence的长度，
 
     def _soft_alignment(self, inputs):
